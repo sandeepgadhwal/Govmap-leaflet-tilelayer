@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<base target="_top">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>Quick Start - Leaflet</title>
+	
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+		}
+		.leaflet-container {
+			height: 400px;
+			width: 600px;
+			max-width: 100%;
+			max-height: 100%;
+		}
+	</style>
+
+	
+</head>
+<body>
+
+
+
+<div id="map" style="width: 100%; height: 100VH;"></div>
+<script>
+
+    const map = L.map('map', {
+		maxZoom: 20
+	});
+    map.setView([31.5693, 35.1421], 6);
+    new L.marker([31.5693, 35.1421]).addTo(map);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+	var corner1 = L.latLng(29.392, 34.075);
+    var corner2 = L.latLng(33.3601, 35.8564);
+    var bounds = L.latLngBounds(corner1, corner2);
+
+    wmsOptions = {
+        layers: 'M2023ORT3TS',
+		bounds: bounds,
+        minZoom: 6,
+        maxZoom: 20,
+    }
+    var wmsLayer = L.tileLayer.wms('http://localhost:8080/service', wmsOptions).addTo(map);
+
+
+</script>
+
+
+
+
+</body>
+</html>

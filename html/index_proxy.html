@@ -54,45 +54,36 @@
                 2.64583862501058,
                 1.32291931250529,
                 0.661459656252646,
-                0.330729828126323
+                0.330729828126323,
+                0.132291931250529,
+                0.0661459656252646
             ],
             origin: [-5403700, 7116700],
-            bounds: bounds
+            // bounds: bounds
         }
     )
 
     const map = L.map('map', {
         crs: crs,
         minZoom: 0,
-        maxZoom: 9
+        maxZoom: 11
     })
     map.setView([31.5693, 35.1421], 0);
     new L.marker([31.5693, 35.1421]).addTo(map);
 
-    class Govmap extends L.TileLayer{
-        getTileUrl(coords) {
-            var url = super.getTileUrl(coords);
-            var base = url.split('/L')[0];
-
-            var suffix = url.split('/L')[1];
-            var l = parseInt(suffix.split('/R')[0]);
-            var r = parseInt(suffix.split('/R')[1].split("/C")[0]);
-            var c = parseInt(suffix.split('/C')[1].split(".")[0]);
-            var ext = suffix.split(".")[1];
-            var level = l.toString(16).padStart(2, 0),
-            row = r.toString(16).padStart(8, "0"),
-            col = c.toString(16).padStart( 8, "0");
-            url = base + `/L${level}/R${row}/C${col}.${ext}`;
-            return url;
-        }
+    wmsOptions = {
+        layers: 'osm'
     }
-    L.TileLayer.Govmap = Govmap;
+    var wmsLayer = L.tileLayer.wms('http://localhost:8080/service', wmsOptions).addTo(map);
 
-    L.tileLayer.govmap = function(url, options) {
-        return new L.TileLayer.Govmap(url, options);
-    }
+    var corner1 = L.latLng(29.392, 34.075);
+    var corner2 = L.latLng(33.3601, 35.8564);
+    var bounds = L.latLngBounds(corner1, corner2);
 
-    L.tileLayer.govmap('https://cdn.govmap.gov.il/M2023ORT3TS/L{z}/R{y}/C{x}.jpg').addTo(map);
+    L.tileLayer('http://localhost:8000/layers/M2023ORT3TS/L{z}/R{y}/C{x}.jpg', {
+        bounds: bounds,
+        maxZoom: 11,
+    }).addTo(map);
 
 </script>
 

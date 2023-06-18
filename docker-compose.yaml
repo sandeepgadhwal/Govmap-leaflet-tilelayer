@@ -1,0 +1,25 @@
+services:
+
+  mapproxy:
+    image: kartoza/mapproxy
+    ports:
+      - 8080:8080
+    volumes:
+      - ./mapproxy/mapproxy.yaml:/mapproxy/mapproxy.yaml
+      - ./mapproxy/seed.yaml:/mapproxy/seed.yaml
+      - ./mapproxy/log.ini:/mapproxy/log.ini
+      - ./mapproxy/app.py:/opt/mapproxy/app.py
+      - /mapproxy/logs:/opt/mapproxy/logs
+      - /mapproxy/cache_data:/mapproxy/cache_data
+
+  proxy:
+    image: flask_proxy
+    build:
+      context: flask_proxy
+    # flask requires SIGINT to stop gracefully
+    # (default stop signal from Compose is SIGTERM)
+    stop_signal: SIGINT
+    ports:
+      - 8000:8000
+    volumes:
+      - ./flask_proxy:/app

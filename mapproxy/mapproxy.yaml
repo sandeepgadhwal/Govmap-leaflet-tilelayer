@@ -1,0 +1,90 @@
+# -------------------------------
+# MapProxy example configuration.
+# -------------------------------
+#
+# This is a minimal MapProxy configuration.
+# See full_example.yaml and the documentation for more options.
+#
+
+# Starts the following services:
+# Demo:
+#     http://localhost:8080/demo
+# WMS:
+#     capabilities: http://localhost:8080/service?REQUEST=GetCapabilities
+# WMTS:
+#     capabilities: http://localhost:8080/wmts/1.0.0/WMTSCapabilities.xml
+#     first tile: http://localhost:8080/wmts/osm/webmercator/0/0/0.png
+# Tile service (compatible with OSM/etc.)
+#     first tile: http://localhost:8080/tiles/osm/webmercator/0/0/0.png
+# TMS:
+#     note: TMS is not compatible with OSM/Google Maps/etc.
+#     first tile: http://localhost:8080/tms/1.0.0/osm/webmercator/0/0/0.png
+# KML:
+#     initial doc: http://localhost:8080/kml/osm/webmercator
+
+services:
+  demo:
+  tms:
+    use_grid_names: true
+    # origin for /tiles service
+    origin: 'nw'
+  kml:
+      use_grid_names: true
+  wmts:
+  wms:
+    srs: ['EPSG:3857','EPSG:2039']
+    md:
+      title: MapProxy WMS Proxy
+      abstract: This is a minimal MapProxy example.
+
+layers:
+  - name: osm
+    title: Omniscale OSM WMS - osm.omniscale.net
+    sources: [osm_cache]
+  - name: M2023ORT3TS
+    title: Aerial Imagery
+    sources: [M2023ORT3TS_cache]
+
+caches:
+  osm_cache:
+    grids: [webmercator]
+    sources: [osm_tile]
+  M2023ORT3TS_cache:
+    grids: [custom_2039]
+    sources: [M2023ORT3TS_tile]
+
+sources:
+  osm_tile:
+    type: tile
+    grid: GLOBAL_WEBMERCATOR
+    url: http://a.tile.openstreetmap.org/%(z)s/%(x)s/%(y)s.png
+  M2023ORT3TS_tile:
+    type: tile
+    grid: custom_2039
+    url: http://proxy:8000/layers/M2023ORT3TS/L%(z)s/R%(y)s/C%(x)s.jpg
+
+grids:
+    webmercator:
+        base: GLOBAL_WEBMERCATOR
+    custom_2039:
+        srs: EPSG:2039
+        res: [     
+          793.751587503175,
+          264.583862501058,
+          132.291931250529,
+          66.1459656252646,
+          26.4583862501058,
+          13.2291931250529,
+          6.61459656252646,
+          2.64583862501058,
+          1.32291931250529,
+          0.661459656252646,
+          0.330729828126323,
+          0.132291931250529,
+          0.0661459656252646
+        ]
+        tile_size: [256, 256]
+        origin: ul
+        bbox: [-5403700, 293562.885588639, 578501.404707314, 7116700]
+
+globals:
